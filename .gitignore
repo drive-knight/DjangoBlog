@@ -2,6 +2,8 @@
 __pycache__
 static/
 media
+blog/migrations
+settings.py
 
 # PyCharm #
 .idea/**/workspace.xml
