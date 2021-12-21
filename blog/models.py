@@ -33,12 +33,12 @@ class News(models.Model):
     views = models.IntegerField(default=0)
 
     def get_absolute_url(self):
-        return reverse('view_news', kwargs={'slug': self.slug}) #"pk": self.pk
+        return reverse('blog:view_news', kwargs={'slug': self.slug})
 
     def __str__(self):
         return self.title
 
-    def save(self, *args, **kwargs): # new
+    def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         return super(News, self).save(*args, **kwargs)
@@ -53,7 +53,7 @@ class Category(models.Model):
     title = models.CharField(max_length=150, db_index=True, verbose_name='Наименование категории')
 
     def get_absolute_url(self):
-        return reverse('category', kwargs={'category_id': self.pk})
+        return reverse('blog:category', kwargs={'category_id': self.pk})
 
     def __str__(self):
         return self.title
@@ -74,4 +74,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return f'Комментарий {self.name} on {self.post}'
+
 

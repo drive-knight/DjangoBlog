@@ -3,7 +3,8 @@ __pycache__
 static/
 media
 blog/migrations
-settings.py
+.DS_Store
+
 
 # PyCharm #
 .idea/**/workspace.xml
@@ -23,3 +24,7 @@ settings.py
 
 # Environments
 env/
+
+# Specific files #
+##################
+mysite/settings.py

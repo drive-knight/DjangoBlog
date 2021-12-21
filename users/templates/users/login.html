@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Регистрация :: {{ block.super }}
+Login :: {{ block.super }}
 {% endblock %}
 
 {% block sidebar %}
@@ -10,12 +10,13 @@
 
 {% block content %}
 
-<h1>Регистрация</h1>
+
+<h1 class="h3 mb-4 fw-normal" align="center">Авторизация</h1>
 
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-        <button type="sumbit" class="btn btn-primary btn-block">Регистрация</button>
+        <button type="sumbit" class="btn btn-primary btn-block">Войти</button>
 </form>
 
 

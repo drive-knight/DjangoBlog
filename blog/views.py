@@ -4,13 +4,12 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import SuspiciousOperation
 from .models import News, Category
-from .forms import NewsForm, UserReigsterForm, UserLoginForm, ContactForm
-from django.contrib import messages
-from django.contrib.auth import login, logout
+from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm
+
 from django.core.mail import send_mail
 
 '''
-Переопределение не будет работать если settings.DEBUG == True
+settings.DEBUG == True
 
 def bad_request(request):
     raise SuspiciousOperation
@@ -31,38 +30,6 @@ def page_not_found(request, exception):
 '''
 
 
-def register(request):
-    if request.method == 'POST':
-        form = UserReigsterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, 'Вы успешно зарегистрировались')
-            return redirect('home')
-        else:
-            messages.error(request, 'Ошибка регистрации')
-    else:
-        form = UserReigsterForm()
-    return render(request, 'news/register.html', {"form": form})
-
-
-def user_login(request):
-    if request.method == 'POST':
-        form = UserLoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = UserLoginForm()
-    return render(request, 'news/login.html', {"form": form})
-
-
-def user_logout(request):
-    logout(request)
-    return redirect('login')
-
-
 def test_email(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
@@ -75,12 +42,12 @@ def test_email(request):
                 messages.error(request, 'Ошибка отправки')
     else:
         form = ContactForm()
-    return render(request, 'news/test.html', {"form": form})
+    return render(request, 'blog/test.html', {"form": form})
 
 
 class HomeNews(ListView):
     model = News
-    template_name = 'news/home_news_list.html'
+    template_name = 'blog/home_news_list.html'
     context_object_name = 'news'
     paginate_by = 5
 
@@ -96,12 +63,12 @@ class HomeNews(ListView):
 class ViewNews(DetailView):
     model = News
     context_object_name = 'news_item'
-    template_name = 'news/news_detail.html'
+    template_name = 'blog/news_detail.html'
 
 
 class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm
-    template_name = 'news/add_news.html'
+    template_name = 'blog/add_news.html'
     success_url = reverse_lazy('home')
     login_url = '/admin/'
 
@@ -113,24 +80,12 @@ class CreateNews(LoginRequiredMixin, CreateView):
 def get_category(request, category_id):
     news = News.objects.filter(category_id=category_id)
     category = Category.objects.get(pk=category_id)
-    return render(request, template_name='news/category.html', context={'news': news, 'category': category})
-
-
-"""def add_news(self, request):
-    if request.method == 'POST':
-        form = NewsForm(request.POST)
-        if form.is_valid():
-            news = form.save()
-            return redirect(news)
-    else:
-        form = NewsForm()
-    return render(request, 'news/add_news.html', {'form': form})
-"""
+    return render(request, template_name='blog/category.html', context={'news': news, 'category': category})
 
 
 class NewsByCategory(ListView):
     model = News
-    template_name = 'news/home_news_list.html'
+    template_name = 'blog/home_news_list.html'
     context_object_name = 'news'
     allow_empty = False
     paginate_by = 2
