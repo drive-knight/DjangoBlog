@@ -17,9 +17,32 @@
             <img src="{{ news_item.photo.url }}" alt="" width="350" height="184" class="float-left mr-3">
                 <h5 class="card-title">{{ news_item.title}}</h5>
                 <p class="card-text">{{ news_item.content|safe|linebreaks }}</p>
+
+
+     <div class="block-comments" style="color: #000;font-size: 24px;font-weight: 700;">Комментарии</div>
+        {% if comments %}
+     {% for comment in comments %}
+        <span itemprop="name" style="font-weight: bold; font-size: 15px;">{{ comment.name }}</span>
+        <span class="time">{{ comment.created }}</span>
+        <p class="card-text">{{ comment.body }}</p>
+     {% endfor %}
+        {% else %}
+        <p>Комментариев ещё нет, вы можете оставить первый!</p>
+        {% endif %}
+
+        <p>&nbsp;</p>
+
+        <form action="." method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="sumbit" class="">Комментировать</button>
+        </form>
+
     </div>
+
     <div class="card-footer text-muted">
         {{ news_item.created_at|date:"d-m-Y H:i" }}
     </div>
+
 </div>
 {% endblock %}

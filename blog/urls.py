@@ -15,6 +15,7 @@ urlpatterns = [
     path('test/', test_email, name='test'),
     path('', HomeNews.as_view(), name='home'),
     path('category/<int:category_id>/', NewsByCategory.as_view(), name='category'),
-    path('<slug:slug>', ViewNews.as_view(), name='view_news'),
+    path('<slug:slug>/', ViewNews.as_view(), name='view_news'),
     path('add-news/', CreateNews.as_view(), name='add_news'),
+    #path('<int:comment_id>/comment/', add_comment, name='add_comment'),
 ]

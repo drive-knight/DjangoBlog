@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from django.urls import reverse
 from django.template.defaultfilters import slugify
@@ -65,14 +64,17 @@ class Category(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(News, on_delete=models.CASCADE, related_name='comment')
-    name = models.CharField(max_length=60)
+    post = models.ForeignKey(News, on_delete=models.CASCADE, related_name='comments')
+    name = models.CharField(max_length=60, verbose_name='Имя')
     email = models.EmailField()
-    body = models.TextField()
+    body = models.TextField(verbose_name='Текст')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'Комментарий {self.name} on {self.post}'
 
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 

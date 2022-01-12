@@ -1,10 +1,12 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import FormMixin
 from django.core.exceptions import SuspiciousOperation
 from .models import News, Category
-from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm
+from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm, CommentForm
 
 from django.core.mail import send_mail
 
@@ -60,10 +62,34 @@ class HomeNews(ListView):
         return News.objects.filter(is_published=True).select_related('category')
 
 
-class ViewNews(DetailView):
+class ViewNews(FormMixin, DetailView):
+    form_class = CommentForm
     model = News
     context_object_name = 'news_item'
     template_name = 'blog/news_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewNews, self).get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all()
+        return context
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy('blog:view_news', kwargs={'slug':self.get_object().slug})
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.post = self.get_object()
+        self.object.email = self.request.user
+        self.object.name = form.cleaned_data['name']
+        self.object.save()
+        return super().form_valid(form)
 
 
 class CreateNews(LoginRequiredMixin, CreateView):

@@ -28,6 +28,9 @@ class UserRegisterForm(UserCreationForm):
 
 
 class NewsForm(forms.ModelForm):
+    slug = forms.SlugField(label='URL')
+    photo = forms.ImageField(label='Фото')
+
     class Meta:
         model = News
         fields = ['title', 'content', 'is_published', 'category']
@@ -49,7 +52,7 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ('name', 'email', 'body')
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Name', 'id': 'comment-name'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Email', 'id': 'comment-email'}),
-            'body': forms.Textarea(attrs={'placeholder': 'comment body . . . ', 'class': 'comment-body'})
+            'name': forms.TextInput(attrs={'placeholder': 'Введите имя', 'id': 'comment-name'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Введите email', 'id': 'comment-email'}),
+            'body': forms.Textarea(attrs={'placeholder': 'Введите текст', 'class': 'comment-body', 'rows': '3'})
         }

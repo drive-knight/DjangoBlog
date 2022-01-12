@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from .models import News, Category
+from .models import News, Category, Comment
 from django import forms
 
 
@@ -37,6 +37,13 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
     list_display_links = ('id', 'title')
     search_fields = ('title',)
+
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'email', 'post', 'created')
+    list_filter = ('created', 'updated')
+    search_fields = ('name', 'email', 'body')
 
 
 admin.site.register(News, NewsAdmin)
