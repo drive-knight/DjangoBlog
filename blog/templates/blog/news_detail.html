@@ -19,12 +19,15 @@
                 <p class="card-text">{{ news_item.content|safe|linebreaks }}</p>
 
 
-     <div class="block-comments" style="color: #000;font-size: 24px;font-weight: 700;">Комментарии</div>
+     <h2>Комментарии</h2>
         {% if comments %}
      {% for comment in comments %}
+        <div class="comment_block">
+        <p class="info">
         <span itemprop="name" style="font-weight: bold; font-size: 15px;">{{ comment.name }}</span>
-        <span class="time">{{ comment.created }}</span>
-        <p class="card-text">{{ comment.body }}</p>
+        <span class="time">{{ comment.created }}</span></p>
+        {{ comment.body|linebreaks }}
+            </div>
      {% endfor %}
         {% else %}
         <p>Комментариев ещё нет, вы можете оставить первый!</p>
@@ -33,12 +36,12 @@
         <p>&nbsp;</p>
 
         <form action="." method="post">
-        {% csrf_token %}
         {{ form.as_p }}
-        <button type="sumbit" class="">Комментировать</button>
+        {% csrf_token %}
+        <p><button type="sumbit" value="Добавить комментарий">Добавить комментарий</button></p>
         </form>
+</div>
 
-    </div>
 
     <div class="card-footer text-muted">
         {{ news_item.created_at|date:"d-m-Y H:i" }}
