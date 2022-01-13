@@ -7,7 +7,7 @@ from django.template.defaultfilters import slugify
 
 class PublishedManager(models.Manager):
     def get_queryset(self):
-        return super(PublishedManager, self).get_queryset().filter(status='Опубликовано')
+        return super(PublishedManager, self).get_queryset().filter(status='опубликовано')
 
 
 class News(models.Model):

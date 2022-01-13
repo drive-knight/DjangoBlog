@@ -156,7 +156,6 @@ EMAIL_HOST_USER = 'rok5a@yandex.ru'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
 
-
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
