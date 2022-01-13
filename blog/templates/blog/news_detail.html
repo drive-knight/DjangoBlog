@@ -40,7 +40,9 @@
         {% csrf_token %}
         <p><button type="sumbit" value="Добавить комментарий">Добавить комментарий</button></p>
         </form>
+        <p class="tags">Tags: {{ news_item.tags.all|join:", " }}</p>
 </div>
+
 
 
     <div class="card-footer text-muted">

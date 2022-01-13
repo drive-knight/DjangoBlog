@@ -30,6 +30,7 @@ DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False,}
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 1
 
 # Application definition
 
@@ -46,8 +47,9 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'bootstrap4',
     'taggit',
-    'users.apps.UsersConfig'
-    
+    'users.apps.UsersConfig',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 ]
 
 MIDDLEWARE = [
