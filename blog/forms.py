@@ -56,3 +56,7 @@ class CommentForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'placeholder': 'Введите email', 'id': 'comment-email'}),
             'body': forms.Textarea(attrs={'placeholder': 'Введите текст', 'class': 'comment-body', 'rows': '3'})
         }
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(label='Запрос')

@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'django.contrib.sites',
     'django.contrib.sitemaps',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [

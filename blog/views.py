@@ -4,9 +4,10 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormMixin
+from django.contrib.postgres.search import SearchVector
 from django.core.exceptions import SuspiciousOperation
 from .models import News, Category
-from .forms import NewsForm, UserRegisterForm, UserLoginForm, ContactForm, CommentForm
+from .forms import NewsForm, ContactForm, CommentForm, SearchForm
 
 from django.core.mail import send_mail
 
@@ -36,7 +37,11 @@ def test_email(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            mail = send_mail(form.cleaned_data['subject'], form.cleaned_data['content'], 'rok5a@yandex.ru', ['mr.satanaa@gmail.com'], fail_silently=False)
+            mail = send_mail(form.cleaned_data['subject'],
+                             form.cleaned_data['content'],
+                             'rok5a@yandex.ru',
+                             ['mr.satanaa@gmail.com'],
+                             fail_silently=False)
             if mail:
                 messages.success(request, 'Письмо отправлено')
                 return redirect('test')
@@ -45,6 +50,20 @@ def test_email(request):
     else:
         form = ContactForm()
     return render(request, 'blog/test.html', {"form": form})
+
+
+def post_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        results = News.objects.annotate(search=SearchVector('title', 'content')).filter(search=query)
+    return render(request, 'blog/search.html', {'form': form,
+                                                'query': query,
+                                                'results': results})
 
 
 class HomeNews(ListView):

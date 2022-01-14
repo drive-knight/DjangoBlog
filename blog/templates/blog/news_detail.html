@@ -10,44 +10,37 @@
 
 {% block content %}
 <div class="card mb-3">
-    <div class="card-header">
-        Категория: <a href="{{ news_item.category.get_absolute_url }}">{{ news_item.category }}</a>
-    </div>
+  <div class="card-header">
+    Категория: <a href="{{ news_item.category.get_absolute_url }}">{{ news_item.category }}</a>
+  </div>
     <div class="card-body">
-            <img src="{{ news_item.photo.url }}" alt="" width="350" height="184" class="float-left mr-3">
-                <h5 class="card-title">{{ news_item.title}}</h5>
-                <p class="card-text">{{ news_item.content|safe|linebreaks }}</p>
+      <img src="{{ news_item.photo.url }}" alt="" width="350" height="184" class="float-left mr-3">
+        <h5 class="card-title">{{ news_item.title}}</h5>
+          <p class="card-text">{{ news_item.content|safe|linebreaks }}</p>
 
-
-     <h2>Комментарии</h2>
-        {% if comments %}
-     {% for comment in comments %}
-        <div class="comment_block">
-        <p class="info">
-        <span itemprop="name" style="font-weight: bold; font-size: 15px;">{{ comment.name }}</span>
-        <span class="time">{{ comment.created }}</span></p>
-        {{ comment.body|linebreaks }}
-            </div>
-     {% endfor %}
-        {% else %}
-        <p>Комментариев ещё нет, вы можете оставить первый!</p>
-        {% endif %}
-
-        <p>&nbsp;</p>
-
-        <form action="." method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <p><button type="sumbit" value="Добавить комментарий">Добавить комментарий</button></p>
-        </form>
-        <p class="tags">Tags: {{ news_item.tags.all|join:", " }}</p>
-</div>
-
-
-
-    <div class="card-footer text-muted">
-        {{ news_item.created_at|date:"d-m-Y H:i" }}
+  <h2>Комментарии</h2>
+  {% if comments %}
+  {% for comment in comments %}
+    <div class="comment_block">
+    <p class="info">
+    <span itemprop="name" style="font-weight: bold; font-size: 15px;">{{ comment.name }}</span>
+    <span class="time">{{ comment.created }}</span></p>
+    {{ comment.body|linebreaks }}
     </div>
-
+  {% endfor %}
+  {% else %}
+  <p>Комментариев ещё нет, вы можете оставить первый!</p>
+  {% endif %}
+  <p>&nbsp;</p>
+    <form action="." method="post">
+    {{ form.as_p }}
+    {% csrf_token %}
+    <p><button type="submit">Добавить комментарий</button></p>
+    </form>
+    <p class="tags">Теги: {{ news_item.tags.all|join:", " }}</p>
+    </div>
+      <div class="card-footer text-muted">
+        {{ news_item.created_at|date:"d-m-Y H:i" }}
+      </div>
 </div>
 {% endblock %}
