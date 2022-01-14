@@ -8,7 +8,6 @@ from django.contrib.postgres.search import SearchVector
 from django.core.exceptions import SuspiciousOperation
 from .models import News, Category
 from .forms import NewsForm, ContactForm, CommentForm, SearchForm
-
 from django.core.mail import send_mail
 
 '''
@@ -114,8 +113,19 @@ class ViewNews(FormMixin, DetailView):
 class CreateNews(LoginRequiredMixin, CreateView):
     form_class = NewsForm
     template_name = 'blog/add_news.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('blog:home')
     login_url = '/admin/'
+
+    def post(self, request, *args, **kwargs):
+        if request.method == "POST":
+            form = NewsForm(request.POST, request.FILES)
+            if form.is_valid():
+                self.object = form.save(commit=False)
+                self.object.photo = form.cleaned_data['photo']
+                self.object.slug = form.cleaned_data['slug']
+                self.object.is_published = form.cleaned_data['is_published']
+                self.object.save()
+                return super().form_valid(form)
 
     def form_valid(self, form):
         form.instance.user = self.request.user

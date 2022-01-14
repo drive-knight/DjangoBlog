@@ -16,7 +16,11 @@
     </div>
     <div class="card-body">
         <div class="media">
+            {% if item.photo %}
             <img src="{{ item.photo.url }}" alt="" width="350" height="184" class="mr-3">
+            {% else %}
+            <p></p>
+            {% endif %}
         <div class="media-body">
                 <h5 class="card-title">{{ item.title}}</h5>
                 <p class="card-text">{{ item.content|safe|truncatewords:50 }}</p>

@@ -12,7 +12,7 @@
 
 <h1>Добавление новости</h1>
 
-<form action="{% url 'blog:add_news' %}" method="post">
+<form enctype="multipart/form-data" action="{% url 'blog:add_news' %}"  method="post">
     {% csrf_token %}
     {{ form.as_p }}
 

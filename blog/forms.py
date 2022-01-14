@@ -29,15 +29,16 @@ class UserRegisterForm(UserCreationForm):
 
 class NewsForm(forms.ModelForm):
     slug = forms.SlugField(label='URL')
-    photo = forms.ImageField(label='Фото')
+    photo = forms.ImageField(label='Изображние')
 
     class Meta:
         model = News
-        fields = ['title', 'content', 'is_published', 'category']
+        fields = ['title', 'content', 'is_published', 'category', 'status']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
             'category': forms.Select(attrs={'class': 'form-control'}),
+            'status': forms.Select(choices=News.STATUS_CHOICES)
         }
 
     def clean_title(self):

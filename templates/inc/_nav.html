@@ -11,6 +11,7 @@
         {% if request.user.is_authenticated %}
         <li class="nav-item"><a class="nav-link" href="{% url 'blog:add_news' %}">Добавить новость</a></li>
         {% endif %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'blog:post_search' %}">Поиск</a></li>
     </ul>
 
       <span class="navbar-text">

@@ -31,13 +31,15 @@
   {% else %}
   <p>Комментариев ещё нет, вы можете оставить первый!</p>
   {% endif %}
-  <p>&nbsp;</p>
     <form action="." method="post">
-    {{ form.as_p }}
     {% csrf_token %}
+    {{ form.as_p }}
     <p><button type="submit">Добавить комментарий</button></p>
     </form>
+    {% if news_item.tags.all %}
     <p class="tags">Теги: {{ news_item.tags.all|join:", " }}</p>
+    {% else %}
+    {% endif %}
     </div>
       <div class="card-footer text-muted">
         {{ news_item.created_at|date:"d-m-Y H:i" }}

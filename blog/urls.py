@@ -12,7 +12,7 @@ handler500 = 'news.views.server_error'
 app_name = 'blog'
 
 urlpatterns = [
-    path('test/', test_email, name='test'),
+    path('mail/', test_email, name='mail'),
     path('search/', post_search, name='post_search'),
     path('add-news/', CreateNews.as_view(), name='add_news'),
     path('', HomeNews.as_view(), name='home'),
