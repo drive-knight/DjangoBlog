@@ -2,7 +2,16 @@ from django.db import models
 from django.utils import timezone
 from taggit.managers import TaggableManager
 from django.urls import reverse
-from django.template.defaultfilters import slugify
+from autoslug import AutoSlugField
+from uuslug import uuslug
+
+
+def instance_slug(instance):
+    return instance.title
+
+
+def slugify_value(value):
+    return value.replace(' ', '-')
 
 
 class PublishedManager(models.Manager):
@@ -17,7 +26,8 @@ class News(models.Model):
     )
 
     title = models.CharField(max_length=150, verbose_name='Название')
-    slug = models.SlugField(max_length=250, null=False, unique=True, verbose_name='URL')
+    slug = AutoSlugField(max_length=60, null=False, unique=True, verbose_name='URL', populate_from=instance_slug,
+                         slugify=slugify_value)
     publish = models.DateTimeField(default=timezone.now)
     content = models.TextField(verbose_name='Контент')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
@@ -38,8 +48,7 @@ class News(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.title)
+        self.slug = uuslug(self.slug, instance=self)
         return super(News, self).save(*args, **kwargs)
 
     class Meta:

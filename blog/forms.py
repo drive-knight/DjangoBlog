@@ -28,7 +28,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class NewsForm(forms.ModelForm):
-    slug = forms.SlugField(label='URL')
+    slug = forms.SlugField(label='URL', required=False)
     photo = forms.ImageField(label='Изображние')
 
     class Meta:
