@@ -92,7 +92,7 @@ class ViewNews(FormMixin, DetailView):
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse_lazy('blog:view_news', kwargs={'slug':self.get_object().slug})
+        return reverse_lazy('blog:view_news', kwargs={'slug': self.get_object().slug})
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()

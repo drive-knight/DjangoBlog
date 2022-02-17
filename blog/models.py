@@ -35,17 +35,17 @@ class News(models.Model):
     photo = models.ImageField(upload_to='photos/%Y/%m/%d', verbose_name='Изображние', blank='True')
     status = models.CharField(max_length=13, choices=STATUS_CHOICES, verbose_name='Статус', default='Опубликовано')
     is_published = models.BooleanField(default=True, verbose_name='Опубликовано')
-    category = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
+    category = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория', related_name='categories')
     objects = models.Manager()
     published_obj = PublishedManager()
     tags = TaggableManager()
     views = models.IntegerField(default=0)
 
-    def get_absolute_url(self):
-        return reverse('blog:view_news', kwargs={'slug': self.slug})
-
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('blog:view_news', kwargs={'slug': self.slug})
 
     def save(self, *args, **kwargs):
         self.slug = uuslug(self.slug, instance=self)
@@ -59,12 +59,13 @@ class News(models.Model):
 
 class Category(models.Model):
     title = models.CharField(max_length=150, db_index=True, verbose_name='Наименование категории')
-
-    def get_absolute_url(self):
-        return reverse('blog:category', kwargs={'category_id': self.pk})
+    slug = models.SlugField(max_length=60, null=False, unique=True)
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('blog:category', kwargs={'category_id': self.pk})
 
     class Meta:
         verbose_name = 'Категория'

@@ -34,8 +34,8 @@ class NewsAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title')
-    list_display_links = ('id', 'title')
+    list_display = ('id', 'title', 'slug')
+    list_display_links = ('id', 'title', 'slug')
     search_fields = ('title',)
 
 

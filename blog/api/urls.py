@@ -5,10 +5,11 @@ from rest_framework import routers
 app_name = 'blog'
 
 router = routers.DefaultRouter()
-router.register('courses', views.NewsViewSet)
+router.register('news', views.NewsViewSet)
+router.register('user', views.UserViewSet)
+router.register('category', views.CategoryViewSet)
+
 
 urlpatterns = [
-    path('news/', views.NewsListView.as_view(), name='subject_list'),
-    path('news/<pk>/', views.NewsDetailView.as_view(), name='subject_detail'),
     path('', include(router.urls)),
 ]
