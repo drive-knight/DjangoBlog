@@ -18,12 +18,10 @@
         <div class="media">
             {% if item.photo %}
             <img src="{{ item.photo.url }}" alt="" width="350" height="184" class="mr-3">
-            {% else %}
-            <img src="https://picsum.photos/536/354" alt="" width="350" height="184" class="mr-3">
             {% endif %}
             <div class="media-body">
-                <h5 class="card-title">{{ item.title}}</h5>
-                <p class="card-text">{{ item.content|truncatewords:50 }}</p>
+                <h5 class="card-title">{{ item.title }}</h5>
+                <p class="card-text">{{ item.content|truncatewords:50|safe }}</p>
                 <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
             </div>
         </div>
@@ -33,5 +31,6 @@
         {{ item.created_at|date:"d-m-Y H:i" }}
     </div>
 </div>
-        {% endfor %}
+{% endfor %}
+
 {% endblock %}

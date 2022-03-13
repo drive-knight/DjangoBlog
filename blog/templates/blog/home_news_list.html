@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block title %}
     {{ title }} :: {{ block.super }}
 {% endblock %}
@@ -32,5 +33,34 @@
         {{ item.created_at|date:"d-m-Y H:i" }}
     </div>
 </div>
-        {% endfor %}
+{% endfor %}
+
+{% for item in newsiss %}
+<div class="card mb-3">
+    <div class="card-header">
+            Категория: <a href="{{ item.category.get_absolute_url }}">{{ item.category }}</a>
+    </div>
+    <div class="card-body">
+        <div class="media">
+            {% if item.photo %}
+            <img src="{{ item.photo.url }}" alt="" width="350" height="184" class="mr-3">
+            {% else %}
+            <p></p>
+            {% endif %}
+        <div class="media-body">
+                <h5 class="card-title">{{ item.title}}</h5>
+                <p class="card-text">{{ item.content|safe|truncatewords:50 }}</p>
+                <a href="{{ item.get_absolute_url }}" class="btn btn-primary">Read more...</a>
+        </div>
+        </div>
+    </div>
+    <div class="card-footer text-muted">
+        {{ item.created_at|date:"d-m-Y H:i" }}
+    </div>
+</div>
+{% endfor %}
+
+
+
+
 {% endblock %}

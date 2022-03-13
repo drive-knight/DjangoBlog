@@ -14,9 +14,8 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-# Path(__file__).resolve().parent.parent
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__,
-os.pardir))))
+# os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__,# os.pardir))))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 
@@ -29,9 +28,8 @@ SECRET_KEY = 'django-insecure-4z=dzsod-w^(25%%r2khl6y+4h1ullnc*+2tz8b#n_!fg)gv$y
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-DEBUG_TOOLBAR_CONFIG = {'INTERCEPT_REDIRECTS': False,}
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['www.site.news', '127.0.0.1']
 
 SITE_ID = 1
 
@@ -163,7 +161,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-INTERNAL_IPS = ('127.0.0.1',)
+#INTERNAL_IPS = ('127.0.0.1',)
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465

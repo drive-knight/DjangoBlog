@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
-from .models import News, Category, Comment
+from .models import News, Category, Comment, NewsIss
 from django import forms
 
 
@@ -15,12 +15,12 @@ class NewsAdminForm(forms.ModelForm):
 
 class NewsAdmin(admin.ModelAdmin):
     form = NewsAdminForm
-    list_display = ('id', 'title', 'category', 'created_at', 'updated_at', 'is_published', 'get_photo', 'status', 'slug')
+    list_display = ('id', 'title', 'category', 'created_at', 'updated_at', 'is_published', 'get_photo', 'status')
     list_display_links = ('id', 'title')
     search_fields = ('title', 'content')
     list_editable = ('is_published',)
     list_filter = ('status', 'is_published', 'category')
-    fields = ('title', 'category', 'content', 'photo', 'get_photo', 'is_published', 'views', 'created_at', 'updated_at', 'status', 'slug')
+    fields = ('title', 'category', 'content', 'photo', 'get_photo', 'is_published', 'views', 'created_at', 'updated_at', 'status')
     readonly_fields = ('get_photo', 'views', 'created_at', 'updated_at')
     save_on_top = True
 
@@ -44,6 +44,12 @@ class CommentAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'post', 'created')
     list_filter = ('created', 'updated')
     search_fields = ('name', 'email', 'body')
+
+
+@admin.register(NewsIss)
+class NewIssAdmin(admin.ModelAdmin):
+    list_display = ('id_iss', 'title')
+    list_filter = ('id_iss', 'title')
 
 
 admin.site.register(News, NewsAdmin)

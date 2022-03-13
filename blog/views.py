@@ -6,9 +6,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormMixin
 from django.contrib.postgres.search import SearchVector
 from django.core.exceptions import SuspiciousOperation
-from .models import News, Category
+from .models import News, Category, NewsIss
 from .forms import NewsForm, ContactForm, CommentForm, SearchForm
 from django.core.mail import send_mail
+import requests
+
 
 '''
 settings.DEBUG == True
@@ -30,6 +32,44 @@ def page_not_found(request, exception):
         status=404
     )
 '''
+
+
+def get_iss(request):
+    r_curr = requests.get('http://iss.moex.com/iss/sitenews.json?start=0')
+    data_curr = r_curr.json()
+    if NewsIss.objects.all()[:2] == [d for d in data_curr['sitenews']['data']]:
+        return render(request, 'blog/news_list.html', {'iss_news': NewsIss.objects.all().order_by('-id_iss')})
+    iss_news = {}
+    start = 0
+    r = requests.get('http://iss.moex.com/iss/sitenews')
+    r_status = r.status_code
+    if r_status == 200:
+        while start != 100:
+            r = requests.get('http://iss.moex.com/iss/sitenews.json?start=%d' % start)
+            data = r.json()
+            for d in data['sitenews']['data']:
+                if NewsIss.objects.filter(id_iss=d[0]).exists():
+                    break
+                else:
+                    iss_data = NewsIss(
+                        id_iss = d[0],
+                        tag = d[1],
+                        title = d[2],
+                        published_at = d[3],
+                        modified_at = d[4],
+                        category_id = 3
+                )
+                iss_data.save()
+                iss_news = NewsIss.objects.all().select_related('category').order_by('-id_iss')
+            start += 50
+    else:
+        raise render(request, 'news/500.html', status=500)
+    return render(request, 'blog/news_list.html', {'iss_news': iss_news})
+
+
+def get_news_iss(request):
+    iss_news = NewsIss.objects.all()
+    return render(request, 'blog/news_list.html', {'iss_news': iss_news})
 
 
 def test_email(request):
@@ -66,14 +106,17 @@ def post_search(request):
 
 
 class HomeNews(ListView):
-    model = News
+    model = News, NewsIss
     template_name = 'blog/home_news_list.html'
     context_object_name = 'news'
-    paginate_by = 5
+    paginate_by = 10
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super(HomeNews, self).get_context_data(**kwargs)
         context['title'] = 'Главная страница'
+        from django.core.paginator import Paginator
+        p = Paginator(NewsIss.objects.all().select_related('category'), self.paginate_by)
+        context['newsiss'] = p.page(context['page_obj'].number)
         return context
 
     def get_queryset(self):
@@ -140,13 +183,14 @@ def get_category(request, category_id):
 
 class NewsByCategory(ListView):
     model = News
-    template_name = 'blog/home_news_list.html'
+    template_name = 'blog/news_list.html'
     context_object_name = 'news'
-    allow_empty = False
-    paginate_by = 2
+    allow_empty = True
+    paginate_by = 10
 
     def get_queryset(self):
-        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category')
+        return News.objects.filter(category_id=self.kwargs['category_id']).select_related('category') \
+               or NewsIss.objects.filter(category_id=self.kwargs['category_id']).select_related('category')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(NewsByCategory, self).get_context_data(**kwargs)

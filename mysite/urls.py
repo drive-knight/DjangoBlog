@@ -26,7 +26,7 @@ sitemaps = {'posts': NewsSitemap,}
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('blog/', include('blog.urls', namespace='blog')),
+    path('', include('blog.urls', namespace='blog')),
     path('users/', include('users.urls', namespace='users')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('api/', include('blog.api.urls', namespace='api')),
