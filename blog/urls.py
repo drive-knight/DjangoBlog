@@ -14,9 +14,9 @@ app_name = 'blog'
 urlpatterns = [
     path('mail/', test_email, name='mail'),
     path('search/', post_search, name='post_search'),
+    path('',  HomeNews.as_view(), name='home'),
     path('newsiss/', get_iss, name='get_iss'),
     path('add-news/', CreateNews.as_view(), name='add_news'),
-    path('',  HomeNews.as_view(), name='home'), # HomeNews.as_view()
     path('category/<int:category_id>/', NewsByCategory.as_view(), name='category'),
     path('<slug:slug>/', ViewNews.as_view(), name='view_news'),
 

@@ -10,6 +10,8 @@ from .models import News, Category, NewsIss
 from .forms import NewsForm, ContactForm, CommentForm, SearchForm
 from django.core.mail import send_mail
 import requests
+from django.db.models import Q
+
 
 
 '''
@@ -64,12 +66,7 @@ def get_iss(request):
             start += 50
     else:
         raise render(request, 'news/500.html', status=500)
-    return render(request, 'blog/news_list.html', {'iss_news': iss_news})
-
-
-def get_news_iss(request):
-    iss_news = NewsIss.objects.all()
-    return render(request, 'blog/news_list.html', {'iss_news': iss_news})
+    return redirect('blog:home')
 
 
 def test_email(request):
