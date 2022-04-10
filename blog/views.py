@@ -1,72 +1,37 @@
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import FormMixin
 from django.contrib.postgres.search import SearchVector
-from django.core.exceptions import SuspiciousOperation
 from .models import News, Category, NewsIss
 from .forms import NewsForm, ContactForm, CommentForm, SearchForm
 from django.core.mail import send_mail
 import requests
-from django.db.models import Q
-
-
-
-'''
-settings.DEBUG == True
-
-def bad_request(request):
-    raise SuspiciousOperation
-    
-def server_error(request):
-    return render(request, 'news/500.html', status=500)   
-       
-def permission_denied(request, exception):
-    return render(request, 'news/403.html', status=403)
-    
-def page_not_found(request, exception):
-    return render(
-        request,
-        'news/404.html',
-        {'path': request.path},
-        status=404
-    )
-'''
+import datetime
 
 
 def get_iss(request):
-    r_curr = requests.get('http://iss.moex.com/iss/sitenews.json?start=0')
-    data_curr = r_curr.json()
-    if NewsIss.objects.all()[:2] == [d for d in data_curr['sitenews']['data']]:
-        return render(request, 'blog/news_list.html', {'iss_news': NewsIss.objects.all().order_by('-id_iss')})
-    iss_news = {}
-    start = 0
-    r = requests.get('http://iss.moex.com/iss/sitenews')
-    r_status = r.status_code
-    if r_status == 200:
-        while start != 100:
-            r = requests.get('http://iss.moex.com/iss/sitenews.json?start=%d' % start)
+        r = requests.get('http://iss.moex.com/iss/sitenews')
+        r_status = r.status_code
+        if r_status == 200:
+            r = requests.get('http://iss.moex.com/iss/sitenews.json')
             data = r.json()
+            yesterday = datetime.date.today() - datetime.timedelta(days=1)
             for d in data['sitenews']['data']:
-                if NewsIss.objects.filter(id_iss=d[0]).exists():
-                    break
-                else:
-                    iss_data = NewsIss(
-                        id_iss = d[0],
-                        tag = d[1],
-                        title = d[2],
-                        published_at = d[3],
-                        modified_at = d[4],
-                        category_id = 3
-                )
-                iss_data.save()
-                iss_news = NewsIss.objects.all().select_related('category').order_by('-id_iss')
-            start += 50
-    else:
-        raise render(request, 'news/500.html', status=500)
-    return redirect('blog:home')
+                if d[3] > yesterday.strftime('%Y-%M-%d %H:%M:%S'): # need additional verification api moex lags sometime
+                    NewsIss.objects.update_or_create(
+                        id_iss=d[0],
+                        tag=d[1],
+                        title=d[2],
+                        published_at=d[3],
+                        modified_at=d[4],
+                        category_id=3
+                    )
+        else:
+            raise render(request, 'news/500.html', status=500)
+        return redirect('blog:home')
 
 
 def test_email(request):
@@ -117,6 +82,9 @@ class HomeNews(ListView):
         return context
 
     def get_queryset(self):
+        now = datetime.datetime.now(datetime.timezone.utc)
+        if now - NewsIss.objects.all().last().published_bd > datetime.timedelta(hours=1):
+            get_iss(self.request)
         return News.objects.filter(is_published=True).select_related('category')
 
 

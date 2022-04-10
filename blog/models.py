@@ -96,6 +96,7 @@ class NewsIss(models.Model):
     title = models.TextField()
     published_at = models.CharField(max_length=30)
     modified_at = models.CharField(max_length=30)
+    published_bd = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title

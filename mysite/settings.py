@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import mimetypes
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # os.path.dirname(os.path.dirname(os.path.abspath(os.path.join(__file__,# os.pardir))))
@@ -29,7 +31,7 @@ SECRET_KEY = 'django-insecure-4z=dzsod-w^(25%%r2khl6y+4h1ullnc*+2tz8b#n_!fg)gv$y
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['www.site.news', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 SITE_ID = 1
 
@@ -66,6 +68,7 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,7 +76,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -160,8 +162,6 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-
-#INTERNAL_IPS = ('127.0.0.1',)
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
@@ -251,3 +251,16 @@ CACHES = {
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+
+INTERNAL_IPS = ('127.0.0.1',)
+
+DEBUG_TOOLBAR_CONFIG = {
+    "INTERCEPT_REDIRECTS": False,
+}
+
+
+
+
+
+
+
