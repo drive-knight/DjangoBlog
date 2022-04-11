@@ -13,25 +13,25 @@ import datetime
 
 
 def get_iss(request):
-        r = requests.get('http://iss.moex.com/iss/sitenews')
-        r_status = r.status_code
-        if r_status == 200:
-            r = requests.get('http://iss.moex.com/iss/sitenews.json')
-            data = r.json()
-            yesterday = datetime.date.today() - datetime.timedelta(days=1)
-            for d in data['sitenews']['data']:
-                if d[3] > yesterday.strftime('%Y-%M-%d %H:%M:%S'): # need additional verification api moex lags sometime
-                    NewsIss.objects.update_or_create(
-                        id_iss=d[0],
-                        tag=d[1],
-                        title=d[2],
-                        published_at=d[3],
-                        modified_at=d[4],
-                        category_id=3
-                    )
-        else:
-            raise render(request, 'news/500.html', status=500)
-        return redirect('blog:home')
+    r = requests.get('http://iss.moex.com/iss/sitenews')
+    r_status = r.status_code
+    if r_status == 200:
+        r = requests.get('http://iss.moex.com/iss/sitenews.json')
+        data = r.json()
+        yesterday = datetime.date.today() - datetime.timedelta(days=5)
+        for d in data['sitenews']['data']:
+            if d[3] >= yesterday.strftime('%Y-%m-%d %H:%M:%S'):  # need additional verification api moex lags sometime
+                NewsIss.objects.update_or_create(
+                    id_iss=d[0],
+                    tag=d[1],
+                    title=d[2],
+                    published_at=d[3],
+                    modified_at=d[4],
+                )
+
+    else:
+        raise render(request, 'news/500.html', status=500)
+    return redirect('blog:home')
 
 
 def test_email(request):
@@ -83,7 +83,8 @@ class HomeNews(ListView):
 
     def get_queryset(self):
         now = datetime.datetime.now(datetime.timezone.utc)
-        if now - NewsIss.objects.all().last().published_bd > datetime.timedelta(hours=1):
+        if (NewsIss.objects.all().exists() is False) or now - NewsIss.objects.all().last().published_bd > datetime.timedelta(
+                hours=1):
             get_iss(self.request)
         return News.objects.filter(is_published=True).select_related('category')
 

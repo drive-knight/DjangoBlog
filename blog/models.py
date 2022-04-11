@@ -91,7 +91,7 @@ class Comment(models.Model):
 
 class NewsIss(models.Model):
     id_iss = models.IntegerField()
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, on_delete=models.PROTECT, default=3)
     tag = models.CharField(max_length=12)
     title = models.TextField()
     published_at = models.CharField(max_length=30)
