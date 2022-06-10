@@ -10,6 +10,7 @@
     <link rel="stylesheet" href= "{% static 'bootstrap/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href= "{% static 'css/style1.css' %}">
 
+
     <title>{% block title %}Новости{% endblock %}</title>
 
 </head>
@@ -50,7 +51,7 @@
 
             {% if page_obj.has_other_pages %}
             <nav aria-label="Page navigation example">
-                <ul class="pagination">
+                <ul class="pagination justify-content-center">
                     {% if page_obj.has_previous %}
                         <li class="page-item">
                     <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1">Previous</a>
@@ -60,7 +61,7 @@
                     {% for p in page_obj.paginator.page_range %}
 
                         {% if page_obj.number == p %}
-                    <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ p }}">{{ p }}<span class="sr-only">(current)</span></a></li>
+                    <li class="page-item active" aria-current="page"><a class="page-link" href="?page={{ p }}">{{ p }}<span class="sr-only"></span></a></li>
                         {% elif p > page_obj.number|add:-3 and  p < page_obj.number|add:3 %}
                     <li class="page-item"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
                         {% endif %}

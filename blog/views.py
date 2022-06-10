@@ -1,3 +1,5 @@
+import copy
+
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, CreateView
@@ -10,9 +12,10 @@ from .forms import NewsForm, ContactForm, CommentForm, SearchForm
 from django.core.mail import send_mail
 import requests
 import datetime
+from django.core.paginator import Paginator
 
 
-def get_iss(request):
+'''def get_iss(request):
     r = requests.get('http://iss.moex.com/iss/sitenews')
     r_status = r.status_code
     if r_status == 200:
@@ -28,10 +31,25 @@ def get_iss(request):
                     published_at=d[3],
                     modified_at=d[4],
                 )
-
     else:
-        raise render(request, 'news/500.html', status=500)
-    return redirect('blog:home')
+        return render(request, 'news/500.html', status=500)
+    return redirect('blog:home')'''
+
+
+def get_iss(request):
+    r = requests.get('http://iss.moex.com/iss/sitenews')
+    r_status = r.status_code
+    context_data = dict()
+    if r_status == 200:
+        r = requests.get('http://iss.moex.com/iss/sitenews.json')
+        data = r.json()
+        context_data = copy.deepcopy(data)
+        paginator = Paginator(context_data['sitenews']['data'], 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+    else:
+        return render(request, 'news/500.html', status=500)
+    return render(request, 'blog/iss.html', {'page_obj': page_obj})
 
 
 def test_email(request):
